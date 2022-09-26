@@ -1,12 +1,9 @@
-FROM ubuntu:focal 
-ENV TZ=America/Chicago
+FROM ibm-semeru-runtimes:open-11-jdk-focal
+WORKDIR /root
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN apt-get update 
-RUN apt-get install -y git
-RUN apt-get install -y openjdk-11-jdk
+RUN apt-get update && apt-get install -y git
+RUN git clone https://github.com/munificent/craftinginterpreters.git \
+    && cd craftinginterpreters/java \
+    && javac -g com/craftinginterpreters/lox/*.java
 
-RUN git clone https://github.com/munificent/craftinginterpreters.git
-RUN cd craftinginterpreters/java
-RUN javac -g com/craftinginterpreters/lox/*.java
-CMD java -cp ./ com.craftinginterpreters.lox.Lox 
+CMD java -cp /root/craftinginterpreters/java com.craftinginterpreters.lox.Lox 
